@@ -1,8 +1,21 @@
 # VisibilityConstraints example
 
-This sample shows how to use the `<VisibilityConstraints>` element in a Visual Studio extension to remove the need to autoload a package.
+This sample shows how to use the `<VisibilityConstraints>` element in a Visual Studio extension to remove the need to use the `ProvideAutoload` attribute on a package class.
 
-So if you use the `ProvideAutoload` attribute in an extension today, this example is for you. The benefit is that your extension won't negatively impact the performance of Visual Studio by loaded when not needed.
+## Limit use of ProvideAutoload
+It is very common to autoload a package when Visual Studio starts up or when a solution is being loaded. It is done by putting an attribute on the `Package` or `AsyncPackage` class like so:
+
+```c#
+[ProvideAutoLoad(UIContextGuids80.SolutionExists)]  
+```
+
+This is often a bad practice because the features in the package usually only applies to certain file or project types. It is much better to only load the package when those files or projects are loaded and not before.
+
+The general rule of thumb is to only load the package when aboslutely needed and never before. There is [great documentation][uicontext] on how to specify auto loading rules that causes loading to happen only when needed.
+
+Some extensions that today use the `ProvideAutoload` attribute don't actually need it at all, since `<VisibilityConstraints>` can handle the reason for the autoloading without actually loading the package. 
+
+If you have to use `ProvideAutoload`, make sure you do so in the background using an `AsyncPackage` as [documented here][asyncpackage].
 
 ## What is VisibilityConstraints?
 
@@ -42,6 +55,10 @@ Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct
 ## Ful documentation
 Read the docs for all the details surrounding these scenarios.
 
-* [Use Rule-based UI Context for Visual Studio Extensions](https://docs.microsoft.com/visualstudio/extensibility/how-to-use-rule-based-ui-context-for-visual-studio-extensions)
-* [VisibilityItem element](https://docs.microsoft.com/en-us/visualstudio/extensibility/visibilityitem-element)
-* [Use AsyncPackage to Load VSPackages in the Background](https://docs.microsoft.com/visualstudio/extensibility/how-to-use-asyncpackage-to-load-vspackages-in-the-background)
+* [Use Rule-based UI Context for Visual Studio Extensions][uicontext]
+* [Use AsyncPackage to Load VSPackages in the Background][asyncpackage]
+* [VisibilityItem element][visibilityitem]
+
+[uicontext]: https://docs.microsoft.com/visualstudio/extensibility/how-to-use-rule-based-ui-context-for-visual-studio-extensions
+[asyncpackage]: https://docs.microsoft.com/visualstudio/extensibility/how-to-use-asyncpackage-to-load-vspackages-in-the-background
+[visibilityitem]: https://docs.microsoft.com/en-us/visualstudio/extensibility/visibilityitem-element
