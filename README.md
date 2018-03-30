@@ -2,6 +2,8 @@
 
 This sample shows how to use the `<VisibilityConstraints>` element in a Visual Studio extension to remove the need to use the `ProvideAutoload` attribute on a package class.
 
+Clone the repo to test out the sample in Visual Studio 2017 yourself. The code applies to both Visual Studio 2015 and 2017.
+
 ## Limit use of ProvideAutoload
 It is very common to autoload a package when Visual Studio starts up or when a solution is being loaded. It is done by putting an attribute on the `Package` or `AsyncPackage` class like so:
 
