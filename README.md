@@ -13,7 +13,7 @@ It is a best practice to never load a package before it is needed, and `<Visibil
 ## How to
 First we must specify a rule for when a button should be visible. In this example, the rule is that the button should be visible when the user right-clicks a .cs or .vb file in Solution Explorer. We can express that in an attribute on the `Package` or `AsyncPackage` class like so:
 
-```c#
+```csharp
 [ProvideUIContextRule(_uiContextSupportedFiles,
     name: "Supported Files",
     expression: "CSharp | VisualBasic",
