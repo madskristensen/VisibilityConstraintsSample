@@ -13,17 +13,15 @@ This is often a bad practice because the features in the package usually only ap
 
 The general rule of thumb is to only load the package when aboslutely needed and never before. There is [great documentation][uicontext] on how to specify auto loading rules that causes loading to happen only when needed.
 
-Some extensions that today use the `ProvideAutoload` attribute don't actually need it at all, since `<VisibilityConstraints>` can handle the reason for the autoloading without actually loading the package. 
+Some extensions that today use the `ProvideAutoload` attribute don't actually need it at all, since `<VisibilityConstraints>` can toggle the visibility of commands/buttons without loading the package. 
 
 If you have to use `ProvideAutoload`, make sure you do so in the background using an `AsyncPackage` as [documented here][asyncpackage].
 
 ## What is VisibilityConstraints?
 
-Often a package is being loaded to run a `BeforeQueryStatus` method for a button to determine its visibility. With `<VisibilityConstraints>` we can determine the visibility of a button without running BeforeQueryStatus and therefore don't need to load the package before the user clicks the button.
+Often a package is being loaded to run a `BeforeQueryStatus` method for a button to determine its visibility. With `<VisibilityConstraints>` we can determine the visibility of a button without running `BeforeQueryStatus` and therefore don't need to load the package before the user clicks the button.
 
 It is a best practice to never load a package before it is needed, and `<VisibilityConstraints>` allow us to load the package only when requested and not before.
-
-[See full .vsct file](src/VsCommandTable.vsct)
 
 ## How to
 First we must specify a rule for when a button should be visible. In this example, the rule is that the button should be visible when the user right-clicks a .cs or .vb file in Solution Explorer. We can express that in an attribute on the `Package` or `AsyncPackage` class like so:
@@ -36,13 +34,13 @@ First we must specify a rule for when a button should be visible. In this exampl
     termValues: new[] { "HierSingleSelectionName:.cs$", "HierSingleSelectionName:.vb$" })]
 ```
 
-[See MyPackage.cs file](src/MyPackage.cs)
+[See sample package class](src/MyPackage.cs)
 
 Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct file like so:
 
 ```xml
 <VisibilityConstraints>
-  <VisibilityItem guid="guidMyButtonPackageCmdSet" id="MyButtonId" context="uiContextSupportedFiles" />
+  <VisibilityItem guid="guidPackageCmdSet" id="MyButtonId" context="uiContextSupportedFiles" />
 </VisibilityConstraints>
 ```
 
@@ -52,7 +50,9 @@ Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct
 <CommandFlag>DynamicVisibility</CommandFlag>
 ```
 
-## Ful documentation
+[See sample .vsct file](src/VsCommandTable.vsct)
+
+## Further reading
 Read the docs for all the details surrounding these scenarios.
 
 * [Use Rule-based UI Context for Visual Studio Extensions][uicontext]
