@@ -10,6 +10,8 @@ Often a package is being loaded to run a `BeforeQueryStatus` method for a button
 
 It is a best practice to never load a package before it is needed, and `<VisibilityConstraints>` allow us to load the package only when requested and not before.
 
+[See full .vsct file](src/VsCommandTable.vsct)
+
 ## How to
 First we must specify a rule for when a button should be visible. In this example, the rule is that the button should be visible when the user right-clicks a .cs or .vb file in Solution Explorer. We can express that in an attribute on the `Package` or `AsyncPackage` class like so:
 
@@ -20,6 +22,8 @@ First we must specify a rule for when a button should be visible. In this exampl
     termNames: new[] { "CSharp", "VisualBasic" },
     termValues: new[] { "HierSingleSelectionName:.cs$", "HierSingleSelectionName:.vb$" })]
 ```
+
+[See MyPackage.cs file](src/MyPackage.cs)
 
 Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct file like so:
 
