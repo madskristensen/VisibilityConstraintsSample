@@ -7,19 +7,20 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Task = System.Threading.Tasks.Task;
 
 namespace VisibilityConstraintsSample
 {
     internal sealed class MyButton
     {
+        // CommandId must match the MyButtonId specified in the .vsct file
         public const int CommandId = 0x0100;
 
-        public static readonly Guid CommandSet = new Guid("497de1d3-ed31-4519-a864-bbcd992fa57d");
+        // Guid must match the guidMyButtonPackageCmdSet specified in the .vsct file
+        public static readonly Guid CommandSet = new Guid("497de1d3-ed31-4519-a864-bbcd992fa57d"); 
 
         private readonly AsyncPackage _package;
 
-        private MyButton(AsyncPackage package, OleMenuCommandService commandService)
+        private MyButton(AsyncPackage package, IMenuCommandService commandService)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -47,7 +48,7 @@ namespace VisibilityConstraintsSample
             // Make the button invisible by default
             button.Visible = false;
 
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            var dte = ServiceProvider.GetService(typeof(DTE)) as DTE2;
             ProjectItem item = dte.SelectedItems.Item(1)?.ProjectItem;
 
             if (item != null)
@@ -66,16 +67,15 @@ namespace VisibilityConstraintsSample
             private set;
         }
 
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+        private IServiceProvider ServiceProvider
         {
             get { return _package; }
         }
 
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static void Initialize(AsyncPackage package, IMenuCommandService commandService)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new MyButton(package, commandService);
         }
 
@@ -84,7 +84,7 @@ namespace VisibilityConstraintsSample
             ThreadHelper.ThrowIfNotOnUIThread();
 
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", GetType().FullName);
-            string title = "MyButton";
+            string title = nameof(MyButton);
 
             VsShellUtilities.ShowMessageBox(
                 _package,

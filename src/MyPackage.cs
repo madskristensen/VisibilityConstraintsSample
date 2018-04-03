@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.Shell;
@@ -23,8 +24,14 @@ namespace VisibilityConstraintsSample
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            // Request any services while on the background thread
+            var commandService = await GetServiceAsync((typeof(IMenuCommandService))) as IMenuCommandService;
+
+            // Switch to the main thread before initializing the MyButton command
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await MyButton.InitializeAsync(this);
+
+            // Now initialize the MyButton command and pass it the commandService
+            MyButton.Initialize(this, commandService);
         }
     }
 }
