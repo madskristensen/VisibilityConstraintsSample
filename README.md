@@ -37,7 +37,7 @@ First we must specify a rule for when a button should be visible. In this exampl
     termValues: new[] { "HierSingleSelectionName:.cs$", "HierSingleSelectionName:.vb$" })]
 ```
 
-[See sample package class](src/MyPackage.cs)
+See [sample package class](src/MyPackage.cs) and more info about using the [ProvideUXContextRule][uicontext] attribute.
 
 Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct file like so:
 
