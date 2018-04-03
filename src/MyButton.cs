@@ -32,33 +32,13 @@ namespace VisibilityConstraintsSample
                 Supported = false
             };
 
-            // The MenuItemQueryStatus method makes the exact same check as the ProvideUIContextRule attribute
+            // The MyQueryStatus method makes the exact same check as the ProvideUIContextRule attribute
             // does on the MyPackage class. When that is the case, there is no need to specify
-            // a QueryStatus method and we can set command.Supported = false to defer the logic back 
+            // a QueryStatus method and we can set command.Supported=false to defer the logic back 
             // to the VisibilityConstraint in the .vsct file.
-            // menuItem.BeforeQueryStatus += MenuItemQueryStatus;
+             //command.BeforeQueryStatus += MyQueryStatus;
 
             commandService.AddCommand(command);
-        }
-
-        private void MenuItemQueryStatus(object sender, EventArgs e)
-        {
-            var button = (MenuCommand)sender;
-
-            // Make the button invisible by default
-            button.Visible = false;
-
-            var dte = ServiceProvider.GetService(typeof(DTE)) as DTE2;
-            ProjectItem item = dte.SelectedItems.Item(1)?.ProjectItem;
-
-            if (item != null)
-            {
-                string fileExtension = Path.GetExtension(item.Name).ToLowerInvariant();
-                string[] supportedFiles = new[] { ".cs", ".vb" };
-
-                // Show the button only if a supported file is selected
-                button.Visible = supportedFiles.Contains(fileExtension);
-            }
         }
 
         public static MyButton Instance
@@ -77,6 +57,26 @@ namespace VisibilityConstraintsSample
             ThreadHelper.ThrowIfNotOnUIThread();
 
             Instance = new MyButton(package, commandService);
+        }
+
+        private void MyQueryStatus(object sender, EventArgs e)
+        {
+            var button = (MenuCommand)sender;
+
+            // Make the button invisible by default
+            button.Visible = false;
+
+            var dte = ServiceProvider.GetService(typeof(DTE)) as DTE2;
+            ProjectItem item = dte.SelectedItems.Item(1)?.ProjectItem;
+
+            if (item != null)
+            {
+                string fileExtension = Path.GetExtension(item.Name).ToLowerInvariant();
+                string[] supportedFiles = new[] { ".cs", ".vb" };
+
+                // Show the button only if a supported file is selected
+                button.Visible = supportedFiles.Contains(fileExtension);
+            }
         }
 
         private void Execute(object sender, EventArgs e)
