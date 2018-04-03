@@ -24,15 +24,25 @@ namespace VisibilityConstraintsSample
             _package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new OleMenuCommand(Execute, menuCommandID);
-            menuItem.BeforeQueryStatus += MenuItemQueryStatus;
-            commandService.AddCommand(menuItem);
+            var cmdID = new CommandID(CommandSet, CommandId);
+            var command = new OleMenuCommand(Execute, cmdID)
+            {
+                // This defers the visibility logic back to the VisibilityConstraints in the .vsct file
+                Supported = false
+            };
+
+            // The MenuItemQueryStatus method makes the exact same check as the ProvideUIContextRule attribute
+            // does on the MyPackage class. When that is the case, there is no need to specify
+            // a QueryStatus method and we can set command.Supported = false to defer the logic back 
+            // to the VisibilityConstraint in the .vsct file.
+            // menuItem.BeforeQueryStatus += MenuItemQueryStatus;
+
+            commandService.AddCommand(command);
         }
 
         private void MenuItemQueryStatus(object sender, EventArgs e)
         {
-            var button = (OleMenuCommand)sender;
+            var button = (MenuCommand)sender;
 
             // Make the button invisible by default
             button.Visible = false;
