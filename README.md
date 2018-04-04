@@ -55,6 +55,8 @@ Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct
 
 [See sample .vsct file](src/VsCommandTable.vsct)
 
+That's it. The project in the `/src/` folder shows a working example of how this all fits together.
+
 ## Further reading
 Read the docs for all the details surrounding these scenarios.
 
