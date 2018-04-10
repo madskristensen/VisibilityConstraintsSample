@@ -48,7 +48,7 @@ Then we must register a `<VisibilityConstraint`> based on that rule in the .vsct
 ```
 
 ...and remember to mark the button itself as dynamic visible:
-
+ 
 ```xml
 <CommandFlag>DynamicVisibility</CommandFlag>
 ```
